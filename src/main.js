@@ -29,7 +29,7 @@ const createWindow = () => {
     let configs = {};
     
     { 
-        const rootPath = app.getAppPath();
+        const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
         let dir = fs.readdirSync(path.join(rootPath, "config"));
         dir.forEach(item => {
             let itemPath = path.join(rootPath, "config", item);
@@ -136,7 +136,7 @@ const createWindow = () => {
     
     // Inject hooks
     ipcMain.on('inject', async (_event, scriptName) => {
-        const rootPath = app.getAppPath();
+        const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
         const jsInjectPath = path.join(rootPath, "injects", scriptName);
         if (fs.existsSync(jsInjectPath)) {
             const jsData = fs.readFileSync(jsInjectPath, "utf8");
@@ -151,7 +151,7 @@ const createWindow = () => {
         Object.keys(configs.injects).forEach(inject_url => {
             if (url === RYTHM_URL + "/" + inject_url) {
                 configs.injects[inject_url].forEach(scriptName => { 
-                    const rootPath = app.getAppPath();
+                    const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
                     const jsInjectPath = path.join(rootPath, "injects", scriptName + ".js");
                     if (fs.existsSync(jsInjectPath)) {
                         const jsData = fs.readFileSync(jsInjectPath, "utf8");
@@ -167,7 +167,7 @@ const createWindow = () => {
     });
     
     mainWindow.webContents.on("dom-ready", () => {
-        const rootPath = app.getAppPath();
+        const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
         const cssPath = path.join(rootPath, "modules", "index.css");
         const jsPath = path.join(rootPath, "modules", "index.js");
         const jsInjectPath = path.join(rootPath, "modules", "inject.js");
@@ -233,7 +233,7 @@ const createWindow = () => {
     mainWindow.menuBarVisible = false;
     
     // Watch for custom CSS changes
-    const rootPath = app.getAppPath();
+    const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
     const customCSSPath = path.join(rootPath, "css", "custom.css");
     let customCSSWatcher = null;
     let customCSSInjectionId = "rythm-custom-css-style";
@@ -306,7 +306,7 @@ const createWindow = () => {
     
     // Setup update-config handler to manage CSS watcher
     ipcMain.handle('update-config', (_event, configName, updates) => {
-        const rootPath = app.getAppPath();
+        const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
         const configPath = path.join(rootPath, "config", configName + ".json");
         
         if (configs[configName]) {

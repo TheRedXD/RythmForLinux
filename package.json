@@ -10,7 +10,14 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "app:clean": "rm -r .vite; rm -r dist",
+    "app:dir": "electron-builder --dir",
+    "app:dist": "electron-builder",
+    "app:linux:resources": "cp -r ./injects ./dist/linux-unpacked/resources/; cp -r ./css ./dist/linux-unpacked/resources/; cp -r ./config ./dist/linux-unpacked/resources/; cp -r ./modules ./dist/linux-unpacked/resources/"
+  },
+  "build": {
+      "appId": "sh.thered.RythmForLinux"
   },
   "keywords": [],
   "author": {
@@ -29,6 +36,7 @@
     "@electron-forge/plugin-vite": "^7.11.1",
     "@electron/fuses": "^1.0.0",
     "electron": "41.0.0",
+    "electron-builder": "^26.8.1",
     "vite": "^5.0.12"
   },
   "dependencies": {
