@@ -1,0 +1,147 @@
+/* Custom Rythm for Linux CSS */
+
+@font-face {
+    font-family: "freesans";
+    font-style: normal;
+    src: url("fonts/freesans/FreeSans.otf");
+}
+@font-face {
+    font-family: "freesans";
+    font-style: oblique;
+    src: url("fonts/freesans/FreeSansOblique.otf");
+}
+@font-face {
+    font-family: "freesans";
+    font-style: normal;
+    font-weight: bold;
+    src: url("fonts/freesans/FreeSansBold.otf");
+}
+@font-face {
+    font-family: "freesans";
+    font-style: oblique;
+    font-weight: bold;
+    src: url("fonts/freesans/FreeSansBoldOblique.otf");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+}
+
+#custom-titlebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 32px;
+    background-color: #11111100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99999;
+    user-select: none;
+    -webkit-app-region: drag;
+    border-bottom: 1px solid #33333300;
+}
+
+#titlebar-label {
+    margin-left: 12px;
+    color: #ccc;
+    font-size: 12px;
+    font-family: "freesans";
+}
+
+.window-controls {
+    display: flex;
+    -webkit-app-region: no-drag;
+    font-family: "freesans";
+}
+
+.control-btn {
+    width: 45px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.control-btn:hover { background-color: #333; }
+.close-btn:hover { background-color: #e81123; }
+
+/* Adjustment to fit titlebar */
+body {
+    margin-top: 32px !important;
+    padding-bottom: 32px !important;
+}
+
+*:focus {
+    outline: none !important;
+}
+
+*:focus-visible {
+    outline: none !important;
+}
+
+
+/* BOOTSCREEN */
+
+#bootscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000000;
+    opacity: 0;
+    transition: opacity 1s ease-in-out, visibility 1s;
+    user-select: none;
+    pointer-events: all;
+    animation: fadein 0.5s ease-in-out;
+    animation-fill-mode: forwards;
+    -webkit-app-region: drag;
+}
+
+#bootscreen h1 {
+    color: white;
+    font-family: 'freesans';
+    font-size: 2.5rem;
+    font-weight: 300;
+    /*letter-spacing: 4px;*/
+    margin: 0;
+    font-kerning: normal;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; transform: scale(0.98); }
+    50% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.5; transform: scale(0.98); }
+}
+
+.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}

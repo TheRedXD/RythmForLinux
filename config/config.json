@@ -1,0 +1,10 @@
+{
+    "window": {
+        "title": "🐧 Rythm for Linux",
+        "size": {
+            "width": 1200,
+            "height": 800
+        }
+    },
+    "customCSS": true
+}
