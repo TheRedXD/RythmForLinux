@@ -12,9 +12,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
 window.addEventListener("DOMContentLoaded", () => {
     if (window.location.href.startsWith('https://discord.com')) {
-        return; 
+        return;
     }
-    
+
     const splash = document.createElement("div");
     splash.id = "bootscreen";
     Object.assign(splash.style, {
@@ -24,35 +24,36 @@ window.addEventListener("DOMContentLoaded", () => {
         zIndex: "9999999", transition: "opacity 0.25s ease-in-out",
         userSelect: "none", overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center",
         willChange: "transform, opacity",
-        transform: "translateZ(0)"
+        transform: "translateZ(0)",
+        fontFamily: "freesans"
     });
 
     splash.innerHTML = `
         <canvas id="fluid-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity: 0; transition: opacity 0.8s ease; will-change: opacity; transform: translateZ(0);"></canvas>
-        
+
         <div id="splash-close" style="
-            position: absolute; 
-            top: 0px; 
-            right: 0px; 
-            width: 45px; 
-            height: 32px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            color: white; 
-            font-family: sans-serif; 
-            font-size: 16px; 
-            cursor: pointer; 
-            z-index: 10000000; 
-            opacity: 0.4; 
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 45px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10000000;
+            opacity: 0.4;
             transition: all 0.2s ease;
-            -webkit-app-region: no-drag; 
+            -webkit-app-region: no-drag;
             border-radius: 0px;
         ">✕</div>
 
         <div style="position:relative; z-index: 2; text-align: center; color: white; font-family: 'freesans'; pointer-events: none;">
-            <h1 style="letter-spacing: -2px; font-size: 84px; font-weight: normal; margin: 0; filter: drop-shadow(0 0 15px rgba(0,0,0,0.5));">rythm</h1>
-            <p style="margin-top: -10px; letter-spacing: 5px; opacity: 1.0; color: #ffffff; font-size: 14px; text-transform: uppercase; padding-left: 30px;">for Linux</p>
+            <h1 style="letter-spacing: -2px; font-size: 84px; font-weight: normal; margin: 0; filter: drop-shadow(0 0 15px rgba(0,0,0,0.5)); font-family: 'freesans';">rythm</h1>
+            <p style="margin-top: -10px; letter-spacing: 5px; opacity: 1.0; color: #ffffff; font-size: 14px; text-transform: uppercase; padding-left: 30px; font-family: 'freesans';">for Linux</p>
         </div>
     `;
     document.documentElement.appendChild(splash);
@@ -74,12 +75,12 @@ window.addEventListener("DOMContentLoaded", () => {
         self.onmessage = function(e) {
             if (e.data.type === 'init') {
                 canvas = e.data.canvas;
-                gl = canvas.getContext('webgl', { 
-                    alpha: false, depth: false, antialias: false, 
+                gl = canvas.getContext('webgl', {
+                    alpha: false, depth: false, antialias: false,
                     stencil: false, preserveDrawingBuffer: false,
-                    powerPreference: "high-performance" 
+                    powerPreference: "high-performance"
                 });
-                
+
                 const vert = \`attribute vec2 p; void main() { gl_Position = vec4(p, 0, 1); }\`;
                 const frag = \`
                     precision mediump float;
@@ -123,8 +124,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
                 self.postMessage({ type: 'ready' });
                 requestAnimationFrame(render);
-            } 
-            
+            }
+
             if (e.data.type === 'resize') {
                 if (canvas) {
                     canvas.width = e.data.width;
@@ -151,7 +152,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     worker.onmessage = (e) => {
         if (e.data.type === 'ready') {
-            setTimeout(() => { 
+            setTimeout(() => {
                 canvasEl.style.opacity = "1";
                 splash.style.opacity = "1";
             }, 50);

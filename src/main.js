@@ -1,6 +1,19 @@
-import { app, BrowserWindow, shell, session, ipcMain} from "electron";
+import { app, BrowserWindow, shell, session, ipcMain, protocol } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
+
+protocol.registerSchemesAsPrivileged([
+    {
+        scheme: 'rythmforlinux',
+        privileges: {
+            standard: true,
+            secure: true,
+            supportFetchAPI: true,
+            corsEnabled: true,
+            bypassCSP: true
+        }
+    }
+]);
 
 import fs from "fs";
 import { watch } from "fs";
@@ -27,18 +40,18 @@ function isExternal(url) {
 
 const createWindow = () => {
     let configs = {};
-    
-    { 
+
+    {
         const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
         let dir = fs.readdirSync(path.join(rootPath, "config"));
         dir.forEach(item => {
             let itemPath = path.join(rootPath, "config", item);
-            if (fs.lstatSync(itemPath).isFile() && path.extname(itemPath) == ".json") { 
+            if (fs.lstatSync(itemPath).isFile() && path.extname(itemPath) == ".json") {
                 let configData = fs.readFileSync(itemPath);
                 let configObject = null;
                 try {
                     configObject = JSON.parse(configData.toString());
-                } catch (e) { 
+                } catch (e) {
                     console.error(`Failed to load ${item} config:`, e);
                 }
                 if (!configObject) return;
@@ -46,7 +59,7 @@ const createWindow = () => {
             }
         })
     }
-    
+
     const mainWindow = new BrowserWindow({
         width: configs.config.window.size.width,
         height: configs.config.window.size.height,
@@ -58,7 +71,7 @@ const createWindow = () => {
             contextIsolation: true,
         },
     });
-    
+
     ipcMain.handle('fetch-config', (_event, configName) => {
         const config = configs[configName];
         if (config) {
@@ -80,7 +93,7 @@ const createWindow = () => {
     // ========================
     // Discord sign-in handling
     // ========================
-    
+
     session.defaultSession.webRequest.onBeforeRequest({ urls: ['*://*/*'] }, (details, callback) => {
         const url = details.url.toLowerCase();
 
@@ -88,6 +101,20 @@ const createWindow = () => {
         if (url.startsWith('discord://')) {
             console.log("Blocked Protocol:", url);
             return callback({ cancel: true });
+        }
+
+        // Handle file requests
+        if (url.startsWith('rythmforlinux://')) {
+            const filePath = details.url.slice('rythmforlinux://'.length, details.url.length);
+            const appPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
+            const resolvedPath = path.resolve(appPath, filePath);
+
+            if (resolvedPath.startsWith(appPath)) {
+                shell.openPath(resolvedPath);
+                return callback({ cancel: false })
+            } else {
+                return callback({ cancel: true })
+            }
         }
 
         // Block localhost such that apps like Discord cannot link up with anything
@@ -124,16 +151,16 @@ const createWindow = () => {
     });
     ipcMain.on('logout-clear', async () => {
         const ses = session.defaultSession;
-        
+
         await ses.clearStorageData({
             storages: ['cookies', 'localstorage', 'indexdb', 'cache', 'serviceworkers']
         });
-    
+
         console.log("Session cleared. Reloading...");
-        
+
         if (mainWindow) mainWindow.loadURL(RYTHM_URL);
     });
-    
+
     // Inject hooks
     ipcMain.on('inject', async (_event, scriptName) => {
         const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
@@ -150,7 +177,7 @@ const createWindow = () => {
     ipcMain.on('conditional-injects', async (_event, url) => {
         Object.keys(configs.injects).forEach(inject_url => {
             if (url === RYTHM_URL + "/" + inject_url) {
-                configs.injects[inject_url].forEach(scriptName => { 
+                configs.injects[inject_url].forEach(scriptName => {
                     const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
                     const jsInjectPath = path.join(rootPath, "injects", scriptName + ".js");
                     if (fs.existsSync(jsInjectPath)) {
@@ -165,19 +192,19 @@ const createWindow = () => {
             }
         });
     });
-    
+
     mainWindow.webContents.on("dom-ready", () => {
         const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
         const cssPath = path.join(rootPath, "modules", "index.css");
         const jsPath = path.join(rootPath, "modules", "index.js");
         const jsInjectPath = path.join(rootPath, "modules", "inject.js");
         const cssPatchesPath = path.join(rootPath, "css", "patches");
-    
+
         console.log("Looking for CSS at:", cssPath);
         console.log("Looking for JS at:", jsPath);
         console.log("Looking for JSInject at:", jsInjectPath);
         console.log("Looking for CSS patches at:", cssPatchesPath);
-    
+
         // Inject CSS
         if (fs.existsSync(cssPath)) {
             const cssData = fs.readFileSync(cssPath, "utf8");
@@ -186,7 +213,7 @@ const createWindow = () => {
         } else {
             console.error("CSS file not found!");
         }
-        
+
         // Inject CSS patches from css/patches directory
         if (fs.existsSync(cssPatchesPath)) {
             const patchFiles = fs.readdirSync(cssPatchesPath);
@@ -205,7 +232,7 @@ const createWindow = () => {
         } else {
             console.warn("CSS patches directory not found!");
         }
-    
+
         // Inject JavaScript
         if (fs.existsSync(jsPath)) {
             const jsData = fs.readFileSync(jsPath, "utf8");
@@ -215,7 +242,7 @@ const createWindow = () => {
         } else {
             console.error("JS file not found!");
         }
-        
+
         // Inject JavaScript Inject
         if (fs.existsSync(jsInjectPath)) {
             const jsData = fs.readFileSync(jsInjectPath, "utf8");
@@ -226,18 +253,18 @@ const createWindow = () => {
             console.error("JSInject file not found!");
         }
     });
-    
+
     mainWindow.loadURL(RYTHM_URL);
 
     mainWindow.setAutoHideMenuBar(true);
     mainWindow.menuBarVisible = false;
-    
+
     // Watch for custom CSS changes
     const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
     const customCSSPath = path.join(rootPath, "css", "custom.css");
     let customCSSWatcher = null;
     let customCSSInjectionId = "rythm-custom-css-style";
-    
+
     const injectCustomCSS = () => {
         if (configs.config.customCSS && fs.existsSync(customCSSPath)) {
             try {
@@ -262,7 +289,7 @@ const createWindow = () => {
             }
         }
     };
-    
+
     const removeCustomCSS = () => {
         const script = `
             (function() {
@@ -276,14 +303,14 @@ const createWindow = () => {
             .then(() => console.log("Custom CSS removed successfully"))
             .catch(err => console.error("Failed to remove custom CSS:", err));
     };
-    
+
     const setupCustomCSSWatcher = () => {
         // Clear existing watcher if any
         if (customCSSWatcher) {
             customCSSWatcher.close();
             customCSSWatcher = null;
         }
-        
+
         // Setup new watcher if custom CSS is enabled
         if (configs.config.customCSS) {
             customCSSWatcher = watch(customCSSPath, (eventType, filename) => {
@@ -297,27 +324,27 @@ const createWindow = () => {
             console.log("Custom CSS watcher stopped");
         }
     };
-    
+
     // Inject custom CSS on startup if enabled
     setTimeout(() => {
         injectCustomCSS();
         setupCustomCSSWatcher();
     }, 100);
-    
+
     // Setup update-config handler to manage CSS watcher
     ipcMain.handle('update-config', (_event, configName, updates) => {
         const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
         const configPath = path.join(rootPath, "config", configName + ".json");
-        
+
         if (configs[configName]) {
             // Update in-memory config
             Object.assign(configs[configName], updates);
-            
+
             // Write to file
             try {
                 fs.writeFileSync(configPath, JSON.stringify(configs[configName], null, 4), "utf8");
                 console.log(`Config '${configName}' updated successfully`);
-                
+
                 // If customCSS config was updated, reconfigure the watcher
                 if (configName === 'config' && 'customCSS' in updates) {
                     setupCustomCSSWatcher();
@@ -327,7 +354,7 @@ const createWindow = () => {
                         removeCustomCSS();
                     }
                 }
-                
+
                 return { success: true, config: configs[configName] };
             } catch (err) {
                 console.error(`Failed to update config '${configName}':`, err);

@@ -3,24 +3,24 @@
 @font-face {
     font-family: "freesans";
     font-style: normal;
-    src: url("fonts/freesans/FreeSans.otf");
+    src: url("rythmforlinux://fonts/freesans/FreeSans.otf");
 }
 @font-face {
     font-family: "freesans";
     font-style: oblique;
-    src: url("fonts/freesans/FreeSansOblique.otf");
+    src: url("rythmforlinux://fonts/freesans/FreeSansOblique.otf");
 }
 @font-face {
     font-family: "freesans";
     font-style: normal;
     font-weight: bold;
-    src: url("fonts/freesans/FreeSansBold.otf");
+    src: url("rythmforlinux://fonts/freesans/FreeSansBold.otf");
 }
 @font-face {
     font-family: "freesans";
     font-style: oblique;
     font-weight: bold;
-    src: url("fonts/freesans/FreeSansBoldOblique.otf");
+    src: url("rythmforlinux://fonts/freesans/FreeSansBoldOblique.otf");
 }
 
 * {
