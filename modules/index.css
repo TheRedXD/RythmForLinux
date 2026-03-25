@@ -50,10 +50,20 @@ body {
 }
 
 #titlebar-label {
-    margin-left: 12px;
     color: #ccc;
     font-size: 12px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    margin-left: 34px;
     font-family: "freesans";
+}
+
+#titlebar-icon {
+    position: absolute;
+    display: block;
+    height: 20px;
+    margin-left: -26px;
+    margin-top: -2px;
 }
 
 .window-controls {
@@ -114,7 +124,7 @@ body {
     -webkit-app-region: drag;
 }
 
-#bootscreen h1 {
+#bootscreen .logo {
     color: white;
     font-family: 'freesans';
     font-size: 2.5rem;

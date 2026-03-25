@@ -1,0 +1,118 @@
+#custom-titlebar {
+    background: linear-gradient(0deg, #00000000 0%, #000000f0 100%);
+    border-bottom: none;
+}
+
+#custom-titlebar * {
+    z-index: 1;
+}
+
+#custom-titlebar .control-btn:hover { background-color: #ffffff20; }
+#custom-titlebar .close-btn:hover { background-color: #e81123; }
+
+#custom-titlebar::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: color-mix(in srgb, var(--vibrant-album-color), transparent 10%);
+    transition: all 1s ease-in-out;
+    filter: blur(50px);
+    margin-top: -30px;
+    pointer-events: none;
+}
+
+._menuContainer_ma2nc_9 {
+    box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.8);
+}
+
+._root_1yrl5_120::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    content: "";
+    background: #000000f0;
+    border-radius: 10px;
+    padding: 2px;
+    margin-left: -2px;
+    filter: blur(2px);
+}
+
+._nowPlayingTrackDetails_1yrl5_1, ._rightpanelmenu_1yrl5_171 {
+    z-index: 10;
+}
+
+._rightpanelmenu_1yrl5_171 {
+    margin-right: 16px;
+}
+
+._root_1yrl5_120 {
+    background: var(--vibrant-album-color);
+    transition: 1s all ease-in-out;
+    border-radius: 10px;
+    margin: 10px;
+    width: calc(100% - 19px);
+    margin-top: 6px;
+    box-shadow: 0px 24px 60px 0px color-mix(in srgb, var(--vibrant-album-color), transparent 50%);
+}
+
+._hide_1yrl5_201 {
+    margin: unset;
+    margin-top: 6px;
+}
+
+._menuIconButton_1yfi4_1 {
+    transition: all .1s ease-in-out;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+}
+
+._menuIconButton_1yfi4_1:hover {
+    background: #ffffff20;
+}
+
+._queueSection_dpygr_25 {
+    border-radius: 0px 0px 10px 10px;
+}
+
+._currentTrackInfo_18m96_14 {
+    border-radius: 10px 10px 0px 0px;
+    border-bottom: 1px solid #ffffff20;
+    box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.6);
+}
+
+._root_7a5qp_9, ._header_16ii0_1, .left-panel {
+    border: 1px solid #ffffff20;
+    border-radius: 10px;
+    gap: 0px;
+    background: var(--overlay-100);
+}
+
+._root_dpygr_1 {
+    border: 1px solid #ffffff20;
+    border-radius: 10px;
+    gap: 0px;
+    background: linear-gradient(to right, #00000000, color-mix(in srgb, var(--vibrant-album-color), transparent 95%));
+}
+._container_fyyz5_1 {
+    border: 1px solid #ffffff20;
+    border-radius: 10px;
+    gap: 0px;
+    background: linear-gradient(to right, var(--overlay-100), color-mix(in srgb, var(--vibrant-album-color), var(--overlay-100) 95%));
+}
+
+._root_dpygr_1 > * {
+    z-index: 1;
+}
+
+._controlBtn_1to64_65._playPauseBtn_1to64_136 {
+    background-color: color-mix(in srgb, var(--vibrant-album-color), var(--overlay-100) 95%);
+    transition: .1s all ease-in-out;
+}
+._controlBtn_1to64_65._playPauseBtn_1to64_136:hover {
+    background-color: color-mix(in srgb, var(--vibrant-album-color), var(--overlay-100) 70%);
+}
+._sliderTrack_1v61r_13 {
+    background-color: color-mix(in srgb, var(--vibrant-album-color), var(--overlay-100) 95%);
+}

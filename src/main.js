@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, session, ipcMain, protocol } from "electron";
+import { app, BrowserWindow, shell, session, ipcMain, protocol, net } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 
@@ -71,6 +71,12 @@ const createWindow = () => {
             contextIsolation: true,
         },
     });
+    
+    const PACKAGE_INFO = JSON.parse(fs.readFileSync(path.join(app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath(), "package.json")));
+    
+    ipcMain.handle('package-info', (_event) => {
+        return PACKAGE_INFO;
+    });
 
     ipcMain.handle('fetch-config', (_event, configName) => {
         const config = configs[configName];
@@ -101,20 +107,6 @@ const createWindow = () => {
         if (url.startsWith('discord://')) {
             console.log("Blocked Protocol:", url);
             return callback({ cancel: true });
-        }
-
-        // Handle file requests
-        if (url.startsWith('rythmforlinux://')) {
-            const filePath = details.url.slice('rythmforlinux://'.length, details.url.length);
-            const appPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
-            const resolvedPath = path.resolve(appPath, filePath);
-
-            if (resolvedPath.startsWith(appPath)) {
-                shell.openPath(resolvedPath);
-                return callback({ cancel: false })
-            } else {
-                return callback({ cancel: true })
-            }
         }
 
         // Block localhost such that apps like Discord cannot link up with anything
@@ -371,6 +363,32 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+    protocol.handle('rythmforlinux', (request) => {
+        if (!request.url.startsWith("rythmforlinux://")) return new Response(null, {
+            status: 400
+        });
+        const filePath = request.url.slice('rythmforlinux://'.length, request.url.length);
+        const rootPath = app.getAppPath().endsWith("/app.asar") ? path.resolve(path.join(app.getAppPath(), "..")) : app.getAppPath();
+        const absolutePath = path.join(rootPath, filePath);
+
+        if (!absolutePath.startsWith(rootPath)) return new Response(null, {
+            status: 403
+        });
+
+        return net.fetch(`file://${absolutePath}`, {
+            bypassCustomProtocolHandlers: true
+        }).then(response => {
+            return new Response(response.body, {
+                status: response.status,
+                statusText: response.statusText,
+                headers: {
+                    ...Object.fromEntries(response.headers.entries()),
+                    'Access-Control-Allow-Origin': '*',
+                }
+            });
+        });
+    });
+
     createWindow();
 
     // On OS X it's common to re-create a window in the app when the

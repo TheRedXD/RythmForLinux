@@ -14,7 +14,7 @@
     "app:clean": "rm -r .vite; rm -r dist",
     "app:dir": "electron-builder --dir",
     "app:dist": "electron-builder",
-    "app:linux:resources": "cp -r ./injects ./dist/linux-unpacked/resources/; cp -r ./css ./dist/linux-unpacked/resources/; cp -r ./config ./dist/linux-unpacked/resources/; cp -r ./modules ./dist/linux-unpacked/resources/"
+    "app:linux:resources": "cp -r ./injects ./dist/linux-unpacked/resources/; cp -r ./css ./dist/linux-unpacked/resources/; cp -r ./config ./dist/linux-unpacked/resources/; cp -r ./modules ./dist/linux-unpacked/resources/; cp -r ./fonts ./dist/linux-unpacked/resources/; cp -r ./package.json ./dist/linux-unpacked/resources/; cp -r ./build ./dist/linux-unpacked/resources/"
   },
   "build": {
       "appId": "sh.thered.RythmForLinux"

@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     logout: () => ipcRenderer.send("logout-clear"),
     inject: (scriptName) => ipcRenderer.send("inject", scriptName),
     fetchConfig: (configName) => ipcRenderer.invoke('fetch-config', configName),
+    packageInfo: () => ipcRenderer.invoke('package-info'),
     updateConfig: (configName, updates) => ipcRenderer.invoke('update-config', configName, updates),
     conditionalInjects: (url) => ipcRenderer.send("conditional-injects", url)
 });
@@ -51,9 +52,9 @@ window.addEventListener("DOMContentLoaded", () => {
             border-radius: 0px;
         ">✕</div>
 
-        <div style="position:relative; z-index: 2; text-align: center; color: white; font-family: 'freesans'; pointer-events: none;">
+        <div class="logo" style="position:relative; z-index: 2; text-align: center; color: white; font-family: 'freesans'; pointer-events: none;">
             <h1 style="letter-spacing: -2px; font-size: 84px; font-weight: normal; margin: 0; filter: drop-shadow(0 0 15px rgba(0,0,0,0.5)); font-family: 'freesans';">rythm</h1>
-            <p style="margin-top: -10px; letter-spacing: 5px; opacity: 1.0; color: #ffffff; font-size: 14px; text-transform: uppercase; padding-left: 30px; font-family: 'freesans';">for Linux</p>
+            <p style="margin-top: -20px; letter-spacing: 5px; opacity: 1.0; color: #ffffff; font-size: 14px; text-transform: uppercase; padding-left: 40px; font-family: 'freesans';">for Linux</p>
         </div>
     `;
     document.documentElement.appendChild(splash);

@@ -31,7 +31,7 @@ async function createTitlebar() {
     const titlebar = document.createElement('div');
     titlebar.id = 'custom-titlebar';
     titlebar.innerHTML = `
-        <div id="titlebar-label">${title}</div>
+        <div id="titlebar-label"><img id="titlebar-icon" src="rythmforlinux://build/icon.png">${title}</div>
         <div class="window-controls">
             <div class="control-btn" id="min-btn">─</div>
             <div class="control-btn" id="max-btn">▢</div>

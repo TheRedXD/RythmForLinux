@@ -19,7 +19,7 @@ function patches(root) {
     };
 }
 
-setTimeout(() => {
+setTimeout(async () => {
     // Get our root
     let elements = document.getElementsByClassName("_root_hjl1d_1");
     if (elements.length == 0) { 
@@ -59,8 +59,10 @@ setTimeout(() => {
         info_card.appendChild(info_row);
     }
     
-    addRow("Author", "TheRedXD");
-    addRow("Version", "1.0");
+    let package_info = await window.electronAPI.packageInfo();
+    
+    addRow("Author", package_info.author.name);
+    addRow("Version", package_info.version);
     
     category.appendChild(category_title);
     category.appendChild(info_card);
