@@ -5,8 +5,18 @@
  */
 function patches(root) {
     // Patch platform
+    let platform;
+    if (navigator.platform.startsWith("Mac")) { 
+        platform = "macOS";
+    }
+    if (navigator.platform.startsWith("Win")) { 
+        platform = "Windows";
+    }
+    if (navigator.platform.startsWith("Linux")) { 
+        platform = "Linux";
+    }
     let platform_value = document.querySelector("._root_hjl1d_1 > ._section_hjl1d_20:nth-of-type(2) ._infoRow_hjl1d_289:nth-of-type(3) > ._infoValue_hjl1d_306");
-    platform_value.innerHTML = "Desktop (Linux)";
+    platform_value.innerHTML = `Desktop (${platform})`;
     
     // Patch quick action logout
     let logoutButton = document.querySelector("._root_hjl1d_1 > ._section_hjl1d_20:nth-of-type(4) ._actionButton_hjl1d_354");
