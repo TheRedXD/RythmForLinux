@@ -1,0 +1,12 @@
+{
+    "name": "V I S U A L I Z E R",
+    "description": "Adds an audio visualizer to Rythm, just like the original version had!",
+    "author": "TheRedXD",
+    "version": "1.0.0",
+    "hooks": [
+        {
+            "file": "index.js",
+            "entrypoints": ["boot"]
+        }
+    ]
+}
